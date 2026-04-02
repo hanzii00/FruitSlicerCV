@@ -208,6 +208,7 @@ class HandTracker:
             return self._gesture_name, self._finger_count
 
     def show_debug(self, pygame_surface=None):
+        """Display camera + game overlay and return keyboard input."""
         import numpy as np
         with self._lock:
             frame = self.frame
@@ -225,7 +226,10 @@ class HandTracker:
                 frame = cv2.addWeighted(frame, 0.45, game_arr, 0.55, 0)
 
             cv2.imshow("FruitSlicerCV – Hand Tracking", frame)
-            cv2.waitKey(1)
+            # Capture keyboard input: return the key code (or -1 if no key pressed)
+            key = cv2.waitKey(1) & 0xFF
+            return key
+        return -1
 
     def release(self):
         self._running = False

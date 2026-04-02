@@ -1,29 +1,3 @@
-# ============================================================
-#  main.py  –  Fruit Ninja CV  |  Entry point & game loop
-# ============================================================
-"""
-Fruit Ninja CV
-==============
-Slice fruits with your index finger tracked by your webcam!
-
-Controls
---------
-  • Point your index finger at the screen to slice fruits
-  • Move your finger FAST across a fruit to slice it
-  • Avoid bombs (dark round objects with a spark)
-  • Open your palm ✋ on the start / game-over screen to begin
-  • Press  R   to restart,  Q / Esc  to quit
-  • Press  D   to toggle the debug camera window
-
-Architecture
-------------
-  main.py        – Game states, main loop, rendering
-  hand_tracker.py – MediaPipe webcam thread
-  fruit.py       – Fruit / Bomb / Particle physics
-  utils.py       – Coordinate mapping, blade trail, helpers
-  settings.py    – Tunable constants
-"""
-
 import sys
 import os
 import math
@@ -182,18 +156,29 @@ class Game:
     # ── Events ───────────────────────────────────────────────
 
     def _handle_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self._quit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key in (pygame.K_q, pygame.K_ESCAPE):
-                    self._quit()
-                elif event.key == pygame.K_r:
-                    self.new_game()
-                elif event.key == pygame.K_d:
-                    self._show_debug = not self._show_debug
-                elif event.key == pygame.K_f:
-                    pygame.display.toggle_fullscreen()
+        # No pygame events since window is hidden; keyboard input comes from OpenCV
+        pass
+    
+    def _handle_keyboard(self, key: int):
+        """Handle keyboard input from OpenCV window."""
+        if key == -1 or key == 255:  # No key pressed
+            return
+        
+        # Convert key code to character
+        try:
+            ch = chr(key).lower()
+        except:
+            return
+        
+        if ch == 'q':
+            self._quit()
+        elif ch == 'r':
+            self.new_game()
+        elif ch == 'd':
+            self._show_debug = not self._show_debug
+        elif ch == 'f':
+            # Fullscreen toggle (for reference, but dummy driver doesn't support it)
+            pass
 
     def _quit(self):
         self._tracker.release()
@@ -217,8 +202,9 @@ class Game:
 
         self._blade.push(tip_screen)
 
-        # Show camera window with game overlay
-        self._tracker.show_debug(self.screen)
+        # Show camera window with game overlay and capture keyboard input
+        key = self._tracker.show_debug(self.screen)
+        self._handle_keyboard(key)
 
         # ── 2. Palm gesture (start / restart) ─────────────────
         if self._palm_cooldown > 0:
