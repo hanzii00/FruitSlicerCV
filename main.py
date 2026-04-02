@@ -11,11 +11,11 @@ import pygame
 
 from settings import (
     SCREEN_WIDTH, SCREEN_HEIGHT, FPS, TITLE,
-    STARTING_LIVES, FRUIT_MISS_PENALTY,
+    STARTING_LIVES,
     FRUIT_SPAWN_INTERVAL, MIN_SPAWN_INTERVAL,
     MAX_FRUITS_ALIVE, BOMB_CHANCE,
     SCORE_PER_FRUIT, SCORE_COMBO_BONUS, COMBO_WINDOW,
-    BG_TOP, BG_BOTTOM, UI_COLOR, SCORE_COLOR, LIFE_COLOR,
+    BG_TOP, BG_BOTTOM, SCORE_COLOR, LIFE_COLOR,
 )
 from hand_tracker import HandTracker
 from fruit import Fruit, Bomb, spawn_object, Particle
